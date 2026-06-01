@@ -1,0 +1,15 @@
+programa aritmetica;
+vars
+    a, b, resultado : entero;
+    x : flotante;
+inicio
+{
+    a = 5;
+    b = 3;
+    resultado = a + b;
+    resultado = a - b;
+    resultado = a * b;
+    x = a / b;
+    resultado = (a + b) * (a - b);
+}
+fin

@@ -1,0 +1,15 @@
+programa relacionales;
+vars
+    a, b, r : entero;
+inicio
+{
+    a = 10;
+    b = 5;
+    r = a > b;
+    r = a < b;
+    r = a == b;
+    r = a != b;
+    escribe("a > b:", r);
+    escribe(a + b * 2);
+}
+fin

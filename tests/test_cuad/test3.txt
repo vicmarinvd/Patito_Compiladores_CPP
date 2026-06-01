@@ -1,0 +1,27 @@
+programa funciones;
+vars
+    x, y, z : entero;
+
+entero sumar(a : entero, b : entero) {
+    vars
+        res : entero;
+    {
+        res = a + b;
+    }
+};
+
+nula mostrar(val : entero) {
+    {
+        escribe("Valor:", val);
+    }
+};
+
+inicio
+{
+    x = 3;
+    y = 4;
+    z = sumar(x, y);
+    escribe("Suma:", z);
+    mostrar(x + y);
+}
+fin

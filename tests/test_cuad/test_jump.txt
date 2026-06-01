@@ -1,0 +1,51 @@
+programa ejercicio;
+vars
+    a, b, c, d, e, f, g, h, j, k : entero;
+inicio
+{
+    b = 4;
+    c = 3;
+    d = 8;
+    e = 2;
+    f = 1;
+    g = 1;
+    h = 1;
+    j = 2;
+    k = 3;
+
+    a = b + c;
+
+    b = e - f;
+
+    mientras (a > c) haz
+    {
+        h = j * k + b;
+
+        si (b < h)
+        {
+            b = h + j;
+
+            mientras (b > a + c) haz
+            {
+                escribe(a + b * c, d - e);
+                b = b - j;
+            };
+
+        } sino {
+
+            a = a + b;
+            escribe(b - d);
+
+            mientras (a - d < c + b) haz
+            {
+                a = a + b;
+                escribe(b - d);
+            };
+
+        };
+    };
+
+    f = a + b;
+    escribe("F =", f);
+}
+fin

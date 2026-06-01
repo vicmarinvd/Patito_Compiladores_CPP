@@ -1,0 +1,160 @@
+programa tests_patito;
+
+vars
+    a, b, c, i, n, suma, x, opcion, res : entero;
+    pi, radio, y, resultado, _valor : flotante;
+    _otro : entero;
+
+nula saludar() {
+    {
+        escribe("Hola desde Patito!");
+    }
+};
+
+entero sumar(a : entero, b : entero) {
+    vars
+        resultado : entero;
+    {
+        resultado = a + b;
+    }
+};
+
+entero maximo(x : entero, y : entero) {
+    vars
+        max : entero;
+    {
+        si (x > y)
+        {
+            max = x;
+        } sino {
+            max = y;
+        };
+    }
+};
+
+nula mostrarResultado(val : entero) {
+    {
+        escribe("Resultado:", val);
+    }
+};
+
+nula factorial(n : entero) {
+    vars
+        fact, i : entero;
+    {
+        fact = 1;
+        i = 1;
+        mientras (i < n) haz
+        {
+            fact = fact * i;
+            i = i + 1;
+        };
+        escribe("Factorial:", fact);
+    }
+};
+
+nula contarHasta(n : entero) {
+    vars
+        i : entero;
+    {
+        i = 0;
+        mientras (i < n) haz
+        {
+            escribe(i);
+            i = i + 1;
+        };
+    }
+};
+
+inicio
+{
+    escribe("TC-01: Declaracion de variables entero y flotante");
+    x = 10;
+    y = 20;
+    resultado = x + y;
+    pi = 3;
+    radio = 5;
+    escribe("x + y =", resultado);
+    escribe("pi =", pi);
+
+    escribe("TC-02: Expresiones aritmeticas");
+    a = 5;
+    b = 3;
+    resultado = a + b * 2;
+    x = 10 + -3;
+    resultado = (a + b) * (a - b);
+    y = a / b + 1;
+    escribe("(a+b)*(a-b) =", resultado);
+
+    escribe("TC-03: Condicional si y sino");
+    x = 10;
+    si (x > 5)
+    {
+        resultado = x * 2;
+    };
+    si (x == 10)
+    {
+        resultado = resultado + 1;
+    } sino {
+        resultado = 0;
+    };
+    si (x != 0)
+    {
+        x = x - 1;
+    };
+    escribe("resultado condicional =", resultado);
+
+    escribe("TC-04: Ciclo while");
+    i = 1;
+    suma = 0;
+    n = 10;
+    mientras (i < n) haz
+    {
+        suma = suma + i;
+        i = i + 1;
+    };
+    escribe("Suma 1..9 =", suma);
+
+    escribe("TC-05: Funciones");
+    saludar();
+    res = sumar(3, 7);
+    escribe("3 + 7 =", res);
+    contarHasta(4);
+
+    escribe("TC-06: Imprime");
+    x = 42;
+    y = 3;
+    escribe("Hola Mundo");
+    escribe("El valor de x es:", x);
+    escribe("Suma:", x + 1, "Flotante:", y);
+    escribe(x + 10);
+
+    escribe("TC-07: Programa completo (funciones + ciclos + condicionales)");
+    a = 15;
+    b = 8;
+    opcion = maximo(a, b);
+    mostrarResultado(opcion);
+    factorial(5);
+    resultado = a + b;
+    si (resultado > 20)
+    {
+        escribe("Resultado mayor a 20");
+    } sino {
+        escribe("Resultado menor o igual a 20");
+    };
+
+    escribe("TC-08: Casos especificos (IDs con _, flotantes, expresiones anidadas)");
+    _valor = 0;
+    pi = 3;
+    _otro = -10;
+    _valor = (_otro + 5) * (pi + 1);
+    si (_valor == 0)
+    {
+    };
+    mientras (_valor < 100) haz
+    {
+        _valor = _valor + 1;
+    };
+    escribe("Fin de casos:", _valor, pi);
+}
+fin

@@ -1,0 +1,11 @@
+programa errores;
+vars
+    x : entero;
+inicio
+{
+    x = 5 @ 3;
+    x = x # 2;
+    x = 10
+    x = x + 1;
+}
+fin
