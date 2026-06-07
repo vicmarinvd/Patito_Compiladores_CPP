@@ -22,7 +22,7 @@ CXXFLAGS = -std=c++17 -Wall -Wextra
 TARGET   = patito
 
 # Archivos fuente C++ escritos a mano
-CPP_SRCS = semantica.cpp dvirtual.cpp cuadruplos.cpp
+CPP_SRCS = semantica.cpp dvirtual.cpp cuadruplos.cpp maquina_virtual.cpp
 
 # Archivos generados por Flex y Bison
 LEX_SRC  = lex.yy.c
@@ -50,6 +50,9 @@ dvirtual.o: dvirtual.cpp dvirtual.hpp semantica.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 cuadruplos.o: cuadruplos.cpp cuadruplos.hpp semantica.hpp dvirtual.hpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+maquina_virtual.o: maquina_virtual.cpp maquina_virtual.hpp cuadruplos.hpp dvirtual.hpp semantica.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # ─── Generar y compilar el parser (Bison) ────────────────────────────

@@ -1,0 +1,44 @@
+programa pelos;
+vars
+    i, j, k : entero;
+
+entero uno(j : entero) {
+    vars
+        i, res : entero;
+    {
+        i = j + (k - j * 2 + j);
+        si (j > 0)
+        {
+            res = uno(i - j);
+        } sino {
+            res = i + k;
+        };
+    }
+};
+
+nula dos(i : entero, j : entero) {
+    vars
+        x, y : entero;
+    {
+        x = i + j;
+        si (x > j * k)
+        {
+            escribe("resultado:", uno(x - k));
+        } sino {
+            escribe("resultado:", uno(j));
+        };
+    }
+};
+
+inicio
+{
+    k = 3;
+    i = 5;
+    j = i * 2 + i;
+    escribe("-- ejemplo 1 (k=3, esperado: 6) --");
+    dos(j - i, j);
+    k = 0;
+    escribe("-- ejemplo 2 (k=0, esperado: 0) --");
+    dos(j - i, j);
+}
+fin

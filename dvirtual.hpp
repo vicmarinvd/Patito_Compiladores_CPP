@@ -94,6 +94,9 @@ public:
 
     // Imprime el mapa de memoria con la ocupación actual de cada segmento
     void imprimirMapa() const;
+
+    // Expone el pool de constantes a la MV para inicializar su memoria de constantes
+    const std::unordered_map<std::string, NodoCte>& getPool() const { return poolCtes; }
 };
 
 //Instancia global

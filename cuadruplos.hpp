@@ -95,6 +95,9 @@ public:
 
     // Imprime todos los cuadruplos en formato tabular
     void imprimir() const;
+
+    // Acceso de solo lectura al vector de cuadruplos (para la MV)
+    const std::vector<Cuadruplo>& getCuads() const { return cuads; }
 };
 
 // Generador de cuadruplos

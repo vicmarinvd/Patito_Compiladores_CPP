@@ -122,7 +122,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#include "cuadruplos.hpp"  
+#include "cuadruplos.hpp"
+#include "maquina_virtual.hpp"
 
 /*
  * TIPO_NULA está definido en semantica.hpp (=3) pero Bison también genera
@@ -165,10 +166,10 @@ static int errsemant = 0;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 40 "patito.y"
+#line 41 "patito.y"
 { char sval[64]; int tval; }
 /* Line 193 of yacc.c.  */
-#line 172 "patito.tab.c"
+#line 173 "patito.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -181,7 +182,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 185 "patito.tab.c"
+#line 186 "patito.tab.c"
 
 #ifdef short
 # undef short
@@ -493,14 +494,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    68,    68,    94,    67,   122,   122,   123,   132,   137,
-     131,   160,   165,   164,   170,   175,   176,   184,   185,   190,
-     191,   196,   195,   245,   244,   259,   262,   262,   263,   263,
-     269,   270,   270,   273,   299,   298,   319,   320,   321,   332,
-     349,   366,   383,   396,   413,   430,   442,   454,   468,   476,
-     484,   483,   514,   533,   539,   549,   564,   563,   576,   581,
-     580,   589,   598,   606,   597,   636,   635,   651,   650,   673,
-     688,   693,   692,   704,   703,   717,   718
+       0,    69,    69,    95,    68,   123,   123,   124,   133,   138,
+     132,   161,   166,   165,   171,   176,   177,   185,   186,   191,
+     192,   197,   196,   246,   245,   262,   265,   265,   266,   266,
+     272,   273,   273,   276,   302,   301,   322,   323,   324,   335,
+     352,   369,   386,   399,   416,   433,   445,   457,   471,   479,
+     487,   486,   517,   536,   542,   552,   567,   566,   579,   584,
+     583,   592,   601,   609,   600,   639,   638,   654,   653,   676,
+     691,   696,   695,   707,   706,   720,   721
 };
 #endif
 
@@ -1503,7 +1504,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 68 "patito.y"
+#line 69 "patito.y"
     {
         /*
          * PN-1: Punto neurálgico de inicio.
@@ -1532,7 +1533,7 @@ yyreduce:
     break;
 
   case 3:
-#line 94 "patito.y"
+#line 95 "patito.y"
     {
         /*
          * PN-INICIO: Se conoce ahora el índice del primer cuadruplo de main.
@@ -1546,7 +1547,7 @@ yyreduce:
     break;
 
   case 4:
-#line 105 "patito.y"
+#line 106 "patito.y"
     {
         /*
          * PN-FIN: El programa es sintáctica y semánticamente correcto.
@@ -1561,7 +1562,7 @@ yyreduce:
     break;
 
   case 8:
-#line 132 "patito.y"
+#line 133 "patito.y"
     {
         /* PN-2: acumular el primer identificador de la declaración */
         pilaIDs.push((yyvsp[(1) - (1)].sval));
@@ -1569,7 +1570,7 @@ yyreduce:
     break;
 
   case 9:
-#line 137 "patito.y"
+#line 138 "patito.y"
     {
         /*
          * PN-3: vaciar la pila de IDs, insertar cada uno en la tabla activa
@@ -1595,7 +1596,7 @@ yyreduce:
     break;
 
   case 12:
-#line 165 "patito.y"
+#line 166 "patito.y"
     {
         /* PN-4: acumular identificadores adicionales separados por coma */
         pilaIDs.push((yyvsp[(2) - (2)].sval));
@@ -1603,27 +1604,27 @@ yyreduce:
     break;
 
   case 15:
-#line 175 "patito.y"
+#line 176 "patito.y"
     { (yyval.tval) = TIPO_INT; ;}
     break;
 
   case 16:
-#line 176 "patito.y"
+#line 177 "patito.y"
     { (yyval.tval) = TIPO_FLT; ;}
     break;
 
   case 19:
-#line 190 "patito.y"
+#line 191 "patito.y"
     { (yyval.tval) = TIPO_NULA; ;}
     break;
 
   case 20:
-#line 191 "patito.y"
+#line 192 "patito.y"
     { (yyval.tval) = (yyvsp[(1) - (1)].tval); ;}
     break;
 
   case 21:
-#line 196 "patito.y"
+#line 197 "patito.y"
     {
         /*
          * PN-5: registrar la función en el directorio, abrir el scope local
@@ -1646,7 +1647,7 @@ yyreduce:
     break;
 
   case 22:
-#line 216 "patito.y"
+#line 217 "patito.y"
     {
         /*
          * PN-6: al cerrar la función:
@@ -1670,7 +1671,7 @@ yyreduce:
     break;
 
   case 23:
-#line 245 "patito.y"
+#line 246 "patito.y"
     {
         /* PN-7: registrar el primer parámetro formal */
         if (funcionActual) {
@@ -1678,6 +1679,8 @@ yyreduce:
                 Variable* v = funcionActual->locales.buscar((yyvsp[(1) - (3)].sval));
                 v->dir = dirVirtual.nextLocalAddr((yyvsp[(3) - (3)].tval));
                 funcionActual->numParams++;
+                /* Guardar dir en orden para que GOSUB de la MV copie args correctamente */
+                funcionActual->paramDirs.push_back(v->dir);
             } else {
                 std::cerr << "Error Semántico: parámetro duplicado '" << (yyvsp[(1) - (3)].sval) << "'\n";
                 errsemant++;
@@ -1687,7 +1690,7 @@ yyreduce:
     break;
 
   case 33:
-#line 274 "patito.y"
+#line 277 "patito.y"
     {
         /*
          * PN-8: asignación.
@@ -1714,7 +1717,7 @@ yyreduce:
     break;
 
   case 34:
-#line 299 "patito.y"
+#line 302 "patito.y"
     {
         /*
          * PN-9a: llamada a función como estatuto (resultado descartado).
@@ -1727,7 +1730,7 @@ yyreduce:
     break;
 
   case 35:
-#line 309 "patito.y"
+#line 312 "patito.y"
     {
         /*
          * PN-9b: GOSUB salta al primer cuadruplo de la función.
@@ -1740,7 +1743,7 @@ yyreduce:
     break;
 
   case 39:
-#line 333 "patito.y"
+#line 336 "patito.y"
     {
         /* PN-E1: consultar cubo, crear temporal, generar cuadruplo */
         int t_der = gen.pilaTipos.pop();
@@ -1758,7 +1761,7 @@ yyreduce:
     break;
 
   case 40:
-#line 350 "patito.y"
+#line 353 "patito.y"
     {
         /* PN-E2: resta; misma lógica que la suma */
         int t_der = gen.pilaTipos.pop();
@@ -1776,7 +1779,7 @@ yyreduce:
     break;
 
   case 41:
-#line 367 "patito.y"
+#line 370 "patito.y"
     {
         /* PN-E3: multiplicación */
         int t_der = gen.pilaTipos.pop();
@@ -1794,7 +1797,7 @@ yyreduce:
     break;
 
   case 42:
-#line 384 "patito.y"
+#line 387 "patito.y"
     {
         /* PN-E4: división; el cubo siempre devuelve TIPO_FLT */
         int t_der = gen.pilaTipos.pop();
@@ -1808,7 +1811,7 @@ yyreduce:
     break;
 
   case 43:
-#line 397 "patito.y"
+#line 400 "patito.y"
     {
         /* PN-E5: relacional >; resultado siempre INT (booleano 0/1) */
         int t_der = gen.pilaTipos.pop();
@@ -1826,7 +1829,7 @@ yyreduce:
     break;
 
   case 44:
-#line 414 "patito.y"
+#line 417 "patito.y"
     {
         /* PN-E6: relacional < */
         int t_der = gen.pilaTipos.pop();
@@ -1844,7 +1847,7 @@ yyreduce:
     break;
 
   case 45:
-#line 431 "patito.y"
+#line 434 "patito.y"
     {
         /* PN-E7: relacional ==; consume tipos pero no los valida estrictamente */
         gen.pilaTipos.pop();
@@ -1857,7 +1860,7 @@ yyreduce:
     break;
 
   case 46:
-#line 443 "patito.y"
+#line 446 "patito.y"
     {
         /* PN-E8: relacional != */
         gen.pilaTipos.pop();
@@ -1870,7 +1873,7 @@ yyreduce:
     break;
 
   case 47:
-#line 455 "patito.y"
+#line 458 "patito.y"
     {
         /*
          * PN-E9: UMINUS; conserva el tipo del operando.
@@ -1885,7 +1888,7 @@ yyreduce:
     break;
 
   case 48:
-#line 469 "patito.y"
+#line 472 "patito.y"
     {
         /* PN-E10: +expr no cambia el valor; propagar la dirección */
         strcpy((yyval.sval), (yyvsp[(2) - (2)].sval));
@@ -1894,7 +1897,7 @@ yyreduce:
     break;
 
   case 49:
-#line 477 "patito.y"
+#line 480 "patito.y"
     {
         /* PN-E11: los paréntesis sólo afectan la precedencia (ya manejada por Bison) */
         strcpy((yyval.sval), (yyvsp[(2) - (3)].sval));
@@ -1902,7 +1905,7 @@ yyreduce:
     break;
 
   case 50:
-#line 484 "patito.y"
+#line 487 "patito.y"
     {
         /*
          * PN-E12a: ERA antes de los argumentos de la función.
@@ -1915,7 +1918,7 @@ yyreduce:
     break;
 
   case 51:
-#line 494 "patito.y"
+#line 497 "patito.y"
     {
         /*
          * PN-E12b: GOSUB; copiar el valor de retorno a un temporal.
@@ -1937,7 +1940,7 @@ yyreduce:
     break;
 
   case 52:
-#line 515 "patito.y"
+#line 518 "patito.y"
     {
         /*
          * PN-E13: obtener la dirección virtual de la variable y su tipo.
@@ -1957,12 +1960,12 @@ yyreduce:
     break;
 
   case 53:
-#line 534 "patito.y"
+#line 537 "patito.y"
     { strcpy((yyval.sval), (yyvsp[(1) - (1)].sval)); ;}
     break;
 
   case 54:
-#line 540 "patito.y"
+#line 543 "patito.y"
     {
         /*
          * PN-E14: constante entera → registrarla en el pool y
@@ -1975,7 +1978,7 @@ yyreduce:
     break;
 
   case 55:
-#line 550 "patito.y"
+#line 553 "patito.y"
     {
         /* PN-E15: constante flotante → igual pero en segmento de constantes float */
         int addr = dirVirtual.getConstAddr((yyvsp[(1) - (1)].sval), TIPO_FLT);
@@ -1985,7 +1988,7 @@ yyreduce:
     break;
 
   case 56:
-#line 564 "patito.y"
+#line 567 "patito.y"
     {
         /*
          * PN-A1: generar cuadruplo ARG para el primer argumento.
@@ -2000,7 +2003,7 @@ yyreduce:
     break;
 
   case 59:
-#line 581 "patito.y"
+#line 584 "patito.y"
     {
         /* PN-A2: argumentos adicionales (separados por coma) */
         std::string idx = std::to_string(gen.contadorArgs);
@@ -2011,7 +2014,7 @@ yyreduce:
     break;
 
   case 62:
-#line 598 "patito.y"
+#line 601 "patito.y"
     {
         /*
          * PN-C1: guardar el índice actual como "punto de retorno" del ciclo.
@@ -2022,7 +2025,7 @@ yyreduce:
     break;
 
   case 63:
-#line 606 "patito.y"
+#line 609 "patito.y"
     {
         /*
          * PN-C2: la condición ya se evaluó y su dirección está en $4.
@@ -2036,7 +2039,7 @@ yyreduce:
     break;
 
   case 64:
-#line 617 "patito.y"
+#line 620 "patito.y"
     {
         /*
          * PN-C3: fin del ciclo.
@@ -2051,7 +2054,7 @@ yyreduce:
     break;
 
   case 65:
-#line 636 "patito.y"
+#line 639 "patito.y"
     {
         /*
          * PN-IF1: condición evaluada.
@@ -2065,7 +2068,7 @@ yyreduce:
     break;
 
   case 67:
-#line 651 "patito.y"
+#line 654 "patito.y"
     {
         /*
          * PN-IF2: inicio del bloque SINO.
@@ -2080,7 +2083,7 @@ yyreduce:
     break;
 
   case 68:
-#line 663 "patito.y"
+#line 666 "patito.y"
     {
         /*
          * PN-IF3: fin del bloque SINO.
@@ -2092,7 +2095,7 @@ yyreduce:
     break;
 
   case 69:
-#line 673 "patito.y"
+#line 676 "patito.y"
     {
         /*
          * PN-IF-END: condicional sin SINO.
@@ -2104,7 +2107,7 @@ yyreduce:
     break;
 
   case 71:
-#line 693 "patito.y"
+#line 696 "patito.y"
     {
         /*
          * PN-P1: imprimir un string literal.
@@ -2117,7 +2120,7 @@ yyreduce:
     break;
 
   case 73:
-#line 704 "patito.y"
+#line 707 "patito.y"
     {
         /*
          * PN-P2: imprimir el valor de una expresión.
@@ -2130,7 +2133,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2134 "patito.tab.c"
+#line 2137 "patito.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2344,7 +2347,7 @@ yyreturn:
 }
 
 
-#line 721 "patito.y"
+#line 724 "patito.y"
 
 
 /* ═════════════════════════════════════════════════════════════════════
@@ -2390,7 +2393,15 @@ int main(int argc, char *argv[]) {
 
     if (argc > 1) fclose(yyin);
 
-    /* Retornar 0 si no hubo errores, 1 en caso contrario */
+    /* Ejecutar la MV solo si no hubo errores de compilación */
+    if (errores_lexicos + errsintx + errsemant == 0) {
+        std::cout << "\n── EJECUCION (Maquina Virtual) ──────────────────────\n";
+        MaquinaVirtual vm(gen.fila, dirFunciones);
+        vm.cargarConstantes(dirVirtual);
+        vm.ejecutar();
+        std::cout << "────────────────────────────────────────────────────\n";
+    }
+
     return (errores_lexicos + errsintx + errsemant > 0) ? 1 : 0;
 }
 

@@ -10,7 +10,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#include "cuadruplos.hpp"  
+#include "cuadruplos.hpp"
+#include "maquina_virtual.hpp"
 
 /*
  * TIPO_NULA está definido en semantica.hpp (=3) pero Bison también genera
@@ -249,6 +250,8 @@ list_func_def
                 Variable* v = funcionActual->locales.buscar($1);
                 v->dir = dirVirtual.nextLocalAddr($3);
                 funcionActual->numParams++;
+                /* Guardar dir en orden para que GOSUB de la MV copie args correctamente */
+                funcionActual->paramDirs.push_back(v->dir);
             } else {
                 std::cerr << "Error Semántico: parámetro duplicado '" << $1 << "'\n";
                 errsemant++;
@@ -763,6 +766,14 @@ int main(int argc, char *argv[]) {
 
     if (argc > 1) fclose(yyin);
 
-    /* Retornar 0 si no hubo errores, 1 en caso contrario */
+    /* Ejecutar la MV solo si no hubo errores de compilación */
+    if (errores_lexicos + errsintx + errsemant == 0) {
+        std::cout << "\n── EJECUCION (Maquina Virtual) ──────────────────────\n";
+        MaquinaVirtual vm(gen.fila, dirFunciones);
+        vm.cargarConstantes(dirVirtual);
+        vm.ejecutar();
+        std::cout << "────────────────────────────────────────────────────\n";
+    }
+
     return (errores_lexicos + errsintx + errsemant > 0) ? 1 : 0;
 }

@@ -5,10 +5,12 @@ vars
     f : flotante;
 
 nula uno(a : entero, b : entero) {
+    vars
+        r : entero;
     {
         si (a > 0) {
-            i = a + b * j + i;
-            escribe(i + j);
+            r = a + b * j;
+            escribe(r);
         } sino {
             escribe(a + b);
         } ;
@@ -31,6 +33,7 @@ nula dos(a : entero, g : flotante) {
 inicio
 {
     i = 2;
+    j = 1;
     k = i + 1;
     f = 3.14;
     mientras (i > 0) haz {

@@ -2,7 +2,6 @@
 
 /*
  * semantica.hpp
- * ─────────────────────────────────────────────────────────────────────
  * Declaraciones de todas las estructuras de análisis semántico del
  * compilador Patito. 
  *
@@ -90,11 +89,13 @@ public:
 
 // Funcion, directorio de funciones
 struct Funcion {
-    std::string    nombre;        // nombre de la función
-    int            tipoRetorno;   // TIPO_INT, TIPO_FLT o TIPO_NULA
-    int            startQuad;     // índice del primer cuadruplo de la función (para referencia en llamadas)
-    int            numParams;     // número de parámetros 
-    TablaVariables locales;       // tabla de variables locales y parámetros
+    std::string      nombre;        // nombre de la función
+    int              tipoRetorno;   // TIPO_INT, TIPO_FLT o TIPO_NULA
+    int              startQuad;     // índice del primer cuadruplo de la función
+    int              numParams;     // número de parámetros
+    TablaVariables   locales;       // tabla de variables locales y parámetros
+    std::vector<int> paramDirs;     // direcciones virtuales de parámetros en orden de declaración
+                                    // la MV usa esto en GOSUB para copiar cada arg al local correcto
 };
 
 // Directorio de funciones, mapa hash con nombre (string) y un mapeo a la estructura funcion 
