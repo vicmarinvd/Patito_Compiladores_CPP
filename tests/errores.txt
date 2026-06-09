@@ -1,10 +1,28 @@
 programa errores;
 vars
-    x : entero;
+    x, y : entero;
+    x : flotante;
+    z : flotante;
+
+nula saludar() {
+    {
+        escribe("Hola");
+    }
+};
+
+nula saludar() {
+    {
+        escribe("Hola otra vez");
+    }
+};
+
 inicio
 {
-    x = 5 @ 3;
-    x = x # 2;
+    x = 5 @+ 3;
+    y = y #- 2;
+    w = 10;
+    x = 3.5;
+    z = 1 + saludar();
     x = 10
     x = x + 1;
 }

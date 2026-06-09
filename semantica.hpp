@@ -18,6 +18,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>   
+using namespace std;
 
 // tipos de datos definidos por un numero para los cuadruplos
 enum Tipo {
@@ -44,9 +45,9 @@ constexpr int NUM_TYPES = 4;   // número de tipos distintos
 constexpr int NUM_OPS   = 9;   // número de operadores
 
 // Convierte un tipo entero a su nombre como string (para mensajes de error)
-std::string tipoToString(int tipo);
+string tipoToString(int tipo);
 
-// Cubo semantico, es una tabla con tres dimensiones (datos) [tipo iz][tipo der][op]- [tipo res]
+// Cubo semantico, es una tabla/arreglo con tres dimensiones (datos) [tipo iz][tipo der][op]- [tipo res]
 // en caso de  no ser valido es TIPO_ERR, se inicializa en el constructor con todas las combinaciones validas 
 class CuboSemantico {
     int cubo[NUM_TYPES][NUM_TYPES][NUM_OPS];
@@ -62,7 +63,7 @@ public:
 
 // Variable, recibe la variable declarada en el programa, con su nombre, tipo y direccion
 struct Variable {
-    std::string nombre;   
+    string nombre;   
     int         tipo;     
     int         dir;      // dirección en el mapa de memoria virtual
 };
@@ -71,17 +72,17 @@ struct Variable {
 // Usa unique_ptr para garantizar que los pointers se mantengan aunque crezca el mapa
 class TablaVariables {
     // unique_ptr garantiza que el objeto Variable no se mueva de memoria
-    std::unordered_map<std::string, std::unique_ptr<Variable>> tabla;
+    unordered_map<string, unique_ptr<Variable>> tabla;
 
 public:
     // Inserta una variable con nombre, tipo y dirección.
     // Retorna  0 si se insertó correctamente.
     // Retorna -1 si el nombre ya existe (declaración duplicada).
-    int insertar(const std::string& nombre, int tipo, int dir = -1);
+    int insertar(const string& nombre, int tipo, int dir = -1);
 
     // Busca una variable por nombre.
     // Retorna pointer a la Variable, o nullptr si no existe.
-    Variable* buscar(const std::string& nombre);
+    Variable* buscar(const string& nombre);
 
     // Imprime todas las variables de la tabla 
     void imprimir() const;
@@ -89,29 +90,29 @@ public:
 
 // Funcion, directorio de funciones
 struct Funcion {
-    std::string      nombre;        // nombre de la función
+    string      nombre;        // nombre de la función
     int              tipoRetorno;   // TIPO_INT, TIPO_FLT o TIPO_NULA
     int              startQuad;     // índice del primer cuadruplo de la función
     int              numParams;     // número de parámetros
     TablaVariables   locales;       // tabla de variables locales y parámetros
-    std::vector<int> paramDirs;     // direcciones virtuales de parámetros en orden de declaración
+    vector<int> paramDirs;     // direcciones virtuales de parámetros en orden de declaración
                                     // la MV usa esto en GOSUB para copiar cada arg al local correcto
 };
 
 // Directorio de funciones, mapa hash con nombre (string) y un mapeo a la estructura funcion 
 class DirectorioFunciones {
     // unique_ptr para estabilidad de punteros (igual que TablaVariables)
-    std::unordered_map<std::string, std::unique_ptr<Funcion>> directorio;
+    unordered_map<string, unique_ptr<Funcion>> directorio;
 
 public:
     // Registra una nueva función.
     // Retorna  0 si se insertó correctamente.
     // Retorna -1 si el nombre ya estaba registrado (función duplicada).
-    int insertar(const std::string& nombre, int tipo);
+    int insertar(const string& nombre, int tipo);
 
     // Busca una función por nombre.
     // Retorna puntero a la Funcion, o nullptr si no existe.
-    Funcion* buscar(const std::string& nombre);
+    Funcion* buscar(const string& nombre);
 
     // Imprime el directorio completo con variables locales de cada función
     void imprimir() const;
@@ -119,14 +120,14 @@ public:
 
 // Pila IDs, acumula nombres de variables antes de conocer su tipo
 class StackIDs {
-    std::vector<std::string> datos;   // vector como pila (push_back / pop_back)
+    vector<string> datos;   // vector como pila (push_back / pop_back)
 
 public:
     // Agrega un nombre a la pila
-    void push(const std::string& nombre);
+    void push(const string& nombre);
 
     // Desapila y retorna el identificador en el tope
-    std::string pop();
+    string pop();
 
     // Retorna true si la pila está vacía
     bool empty() const;

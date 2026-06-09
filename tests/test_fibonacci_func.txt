@@ -1,0 +1,37 @@
+programa fibonacci_func;
+vars
+    n, i, valor : entero;
+
+entero fib(pos : entero) {
+    vars
+        a, b, temp, j : entero;
+    {
+        a = 0;
+        b = 1;
+        j = 0;
+        mientras (j < pos) haz
+        {
+            temp = a + b;
+            a = b;
+            b = temp;
+            j = j + 1;
+        };
+        a = a;
+    }
+};
+
+inicio
+{
+    n = 10;
+    escribe("Serie de Fibonacci via funcion ciclica");
+    escribe("(esperado: 0 1 1 2 3 5 8 13 21 34)");
+
+    i = 0;
+    mientras (i < n) haz
+    {
+        valor = fib(i);
+        escribe(valor);
+        i = i + 1;
+    };
+}
+fin

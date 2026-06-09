@@ -17,16 +17,17 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+using namespace std;
 
 
 // cuadruplo (op, arg1, arg2, resultado)
 // argumentos son direcciones virtuales (tipo string)
 // resultado puede ser dirección virtual, etiqueta de salto (número de cuadruplo) o "_"
 struct Cuadruplo {
-    std::string op;       // operador o instrucción ("+", "=", "GOSUB", ...)
-    std::string arg1;     // primer operando (dirección virtual o "_")
-    std::string arg2;     // segundo operando (dirección virtual o "_")
-    std::string result;   // resultado (dirección destino, etiqueta de salto o "_")
+    string op;       // operador o instrucción ("+", "=", "GOSUB", ...)
+    string arg1;     // primer operando (dirección virtual o "_")
+    string arg2;     // segundo operando (dirección virtual o "_")
+    string result;   // resultado (dirección destino, etiqueta de salto o "_")
 };
 
 
@@ -34,12 +35,12 @@ struct Cuadruplo {
 //template de pila, se usa para PilaOperandos, PilaTipos, PilaOperadores, PilaJumps
 template<typename T>
 class Pila {
-    std::vector<T> datos;     // almacenamiento interno (crece dinámicamente)
-    std::string    nombre;    // nombre descriptivo para mensajes de error
+    vector<T> datos;     // almacenamiento interno (crece dinámicamente)
+    string    nombre;    // nombre descriptivo para mensajes de error
 
 public:
     // constructor, recibe el nombre de la pila para mensajes 
-    explicit Pila(const std::string& nombre = "Pila") : nombre(nombre) {}
+    explicit Pila(const string& nombre = "Pila") : nombre(nombre) {}
 
     //añade un elemento
     void push(const T& val) {
@@ -49,7 +50,7 @@ public:
     // quita un elemento y retorna el del tope
     T pop() {
         if (datos.empty()) {
-            std::cerr << nombre << ": underflow (pop en pila vacía)\n";
+            cerr << nombre << ": underflow (pop en pila vacía)\n";
             return T{};
         }
         T val = datos.back();
@@ -60,7 +61,7 @@ public:
     //retorna el top sin eliminarlo
     T top() const {
         if (datos.empty()) {
-            std::cerr << nombre << ": top en pila vacía\n";
+            cerr << nombre << ": top en pila vacía\n";
             return T{};
         }
         return datos.back();
@@ -77,14 +78,14 @@ public:
 // los cuadruplos se almacenan en un vector por indice
 // se utiliza para fillJump y poder modificar el campo de result de un goto cuando aun no se conoce
 class FilaCuadruplos {
-    std::vector<Cuadruplo> cuads;   // vector indexado de cuadruplos
+    vector<Cuadruplo> cuads;   // vector indexado de cuadruplos
 
 public:
     // Agrega un nuevo cuadruplo al final de la lista
-    void encolar(const std::string& op,
-                 const std::string& arg1,
-                 const std::string& arg2,
-                 const std::string& result);
+    void encolar(const string& op,
+                 const string& arg1,
+                 const string& arg2,
+                 const string& result);
 
     // Rellena el campo 'result' de un cuadruplo ya generado.
     // Se usa para completar GOTOs y GOTOFs cuyo destino se conoce después.
@@ -97,7 +98,7 @@ public:
     void imprimir() const;
 
     // Acceso de solo lectura al vector de cuadruplos (para la MV)
-    const std::vector<Cuadruplo>& getCuads() const { return cuads; }
+    const vector<Cuadruplo>& getCuads() const { return cuads; }
 };
 
 // Generador de cuadruplos
@@ -106,9 +107,9 @@ class GeneradorCuad {
 
 public:
     //Pilas 
-    Pila<std::string> pilaOperandos;    // direcciones virtuales de operandos
+    Pila<string> pilaOperandos;    // direcciones virtuales de operandos
     Pila<int>         pilaTipos;        // tipo de cada operando en pilaOperandos
-    Pila<std::string> pilaOperadores;   // operadores pendientes de procesar
+    Pila<string> pilaOperadores;   // operadores pendientes de procesar
     Pila<int>         pilaJumps;        // índices de cuadruplos con salto pendiente
 
     //Lista de cuadruplos generados
@@ -116,7 +117,7 @@ public:
 
     //Estado de llamada a función
     int         contadorArgs  = 0;    // número de argumentos pasados en la llamada actual
-    std::string funcCallBuf;          // nombre de la función llamada (para ERA/GOSUB)
+    string funcCallBuf;          // nombre de la función llamada (para ERA/GOSUB)
     int         lastAssignedDir = -1; // última dirección asignada (para generar RETURN)
 
     // Constructor: inicializa las pilas con nombres descriptivos
@@ -129,19 +130,19 @@ public:
     // Generación de cuadruplos 
 
     // Encola un cuadruplo (wrapper directo a FilaCuadruplos::encolar)
-    void generar(const std::string& op,
-                 const std::string& arg1,
-                 const std::string& arg2,
-                 const std::string& result);
+    void generar(const string& op,
+                 const string& arg1,
+                 const string& arg2,
+                 const string& result);
 
     // Crea un temporal del tipo dado y retorna su dirección virtual como string
-    std::string nuevoTemp(int tipo);
+    string nuevoTemp(int tipo);
 
     // Busca el tipo de una variable (primero en locales, luego en globales)
-    int getTipoVar(const std::string& nombre);
+    int getTipoVar(const string& nombre);
 
     // Busca la dirección virtual de una variable (locales antes que globales)
-    int getDirVar(const std::string& nombre);
+    int getDirVar(const string& nombre);
 };
 
 // Instancia Global

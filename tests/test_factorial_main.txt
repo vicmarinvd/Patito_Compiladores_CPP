@@ -1,0 +1,39 @@
+programa factorial_main;
+vars
+    n, i, fact : entero;
+
+inicio
+{
+    n = 5;
+    si (n < 0)
+    {
+        escribe("Error: no se puede calcular el factorial de un numero negativo");
+    } sino
+    {
+        fact = 1;
+        i = 1;
+        mientras (i < n + 1) haz
+        {
+            fact = fact * i;
+            i = i + 1;
+        };
+        escribe("Factorial de", n, "=", fact, "(esperado: 120)");
+    };
+
+    n = -3;
+    si (n < 0)
+    {
+        escribe("Error: no se puede calcular el factorial de un numero negativo");
+    } sino
+    {
+        fact = 1;
+        i = 1;
+        mientras (i < n + 1) haz
+        {
+            fact = fact * i;
+            i = i + 1;
+        };
+        escribe("Factorial de", n, "=", fact);
+    };
+}
+fin

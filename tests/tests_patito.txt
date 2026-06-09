@@ -44,7 +44,7 @@ nula factorial(n : entero) {
     {
         fact = 1;
         i = 1;
-        mientras (i < n) haz
+        mientras (i < n + 1) haz
         {
             fact = fact * i;
             i = i + 1;
@@ -63,6 +63,39 @@ nula contarHasta(n : entero) {
             escribe(i);
             i = i + 1;
         };
+    }
+};
+
+entero potencia(base : entero, exponente : entero) {
+    vars
+        r : entero;
+    {
+        si (exponente < 1)
+        {
+            r = 1;
+        } sino
+        {
+            r = base * potencia(base, exponente - 1);
+        };
+    }
+};
+
+flotante promedio(total : entero, cantidad : entero) {
+    vars
+        r : flotante;
+    {
+        r = total / cantidad;
+    }
+};
+
+nula resumenNumero(n : entero) {
+    vars
+        p : entero;
+    {
+        escribe("Resumen para", n);
+        p = potencia(2, n);
+        escribe("2 ^", n, "=", p);
+        factorial(n);
     }
 };
 
@@ -156,5 +189,31 @@ inicio
         _valor = _valor + 1;
     };
     escribe("Fin de casos:", _valor, pi);
+
+    escribe("TC-09: Recursion (potencia)");
+    res = potencia(2, 5);
+    escribe("2 ^ 5 =", res, "(esperado: 32)");
+    res = potencia(3, 3);
+    escribe("3 ^ 3 =", res, "(esperado: 27)");
+
+    escribe("TC-10: Ciclos anidados (tabla de multiplicar)");
+    i = 1;
+    mientras (i < 4) haz
+    {
+        c = 1;
+        mientras (c < 4) haz
+        {
+            escribe(i, "x", c, "=", i * c);
+            c = c + 1;
+        };
+        i = i + 1;
+    };
+
+    escribe("TC-11: Composicion de funciones (una funcion llama a otras)");
+    resumenNumero(4);
+
+    escribe("TC-12: Funcion con retorno flotante");
+    resultado = promedio(suma, 9);
+    escribe("promedio de la suma TC-04 entre 9 =", resultado, "(esperado: 5)");
 }
 fin

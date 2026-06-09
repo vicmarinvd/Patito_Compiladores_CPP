@@ -1,0 +1,33 @@
+programa factorial_func;
+vars
+    num, resultado : entero;
+
+entero factorial(n : entero) {
+    vars
+        i, fact : entero;
+    {
+        fact = 1;
+        i = 1;
+        mientras (i < n + 1) haz
+        {
+            fact = fact * i;
+            i = i + 1;
+        };
+        fact = fact;
+    }
+};
+
+inicio
+{
+    num = 6;
+    resultado = factorial(num);
+    escribe("Factorial de", num, "=", resultado, "(esperado: 720)");
+
+    num = 0;
+    resultado = factorial(num);
+    escribe("Factorial de", num, "=", resultado, "(esperado: 1)");
+
+    num = 4;
+    escribe("Factorial de", num, "=", factorial(num), "(esperado: 24)");
+}
+fin

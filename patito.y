@@ -20,6 +20,7 @@
 #undef NULA
 #include "dvirtual.hpp"
 #define TIPO_NULA 3
+using namespace std;
 
 /* Variables del analizador léxico */
 extern int  yylineno;
@@ -78,7 +79,7 @@ programa
          */
         dirVirtual.init();
         tablaActual = &tablaGlobal;
-        std::cout << "Compilando: " << $2 << "\n";
+        cout << "Compilando: " << $2 << "\n";
 
         /*
          * PN-1b: Emitir el cuadruplo 0: GOTO a main.
@@ -109,10 +110,15 @@ programa
          * Imprimir el mapa de memoria, el directorio de funciones
          * y la lista de cuadruplos generados.
          */
-        std::cout << "\nPrograma Patito válido.\n";
-        dirVirtual.imprimirMapa();
-        dirFunciones.imprimir();
+        
+        /* commenting el mapa de memoria
+         * cout << "\nPrograma Patito válido.\n";
+         *dirVirtual.imprimirMapa();
+         *dirFunciones.imprimir();
+         *gen.fila.imprimir();
+         */
         gen.fila.imprimir();
+
       }
     ;
 
@@ -141,7 +147,7 @@ mas_vars
          * y asignarle una dirección virtual según el scope (global o local).
          */
         while (!pilaIDs.empty()) {
-            std::string nombre = pilaIDs.pop();
+            string nombre = pilaIDs.pop();
 
             if (tablaActual->insertar(nombre, $5) == 0) {
                 /* Inserción exitosa: asignar dirección virtual */
@@ -151,7 +157,7 @@ mas_vars
                          : dirVirtual.nextLocalAddr($5);
             } else {
                 /* Variable ya declarada en este scope */
-                std::cerr << "Error Semántico: variable doblemente declarada '"
+                cerr << "Error Semántico: variable doblemente declarada '"
                           << nombre << "'\n";
                 errsemant++;
             }
@@ -200,7 +206,7 @@ funcs
          * y resetear contadores de direcciones locales y temporales.
          */
         if (dirFunciones.insertar($2, $1) != 0) {
-            std::cerr << "Error Semántico: función doblemente declarada '"
+            cerr << "Error Semántico: función doblemente declarada '"
                       << $2 << "'\n";
             errsemant++;
             funcionActual = nullptr;
@@ -224,9 +230,9 @@ funcs
         if (funcionActual && funcionActual->tipoRetorno != TIPO_NULA) {
             /* Usar el registro especial de retorno según el tipo */
             int retReg = (funcionActual->tipoRetorno == TIPO_FLT) ? RET_FLT : RET_INT;
-            std::string retDir = (gen.lastAssignedDir >= 0)
-                                 ? std::to_string(gen.lastAssignedDir)
-                                 : std::to_string(retReg);
+            string retDir = (gen.lastAssignedDir >= 0)
+                                 ? to_string(gen.lastAssignedDir)
+                                 : to_string(retReg);
             gen.generar("RETURN", retDir, "_", "_");
         }
         gen.generar("ENDFUNC", "_", "_", "_");
@@ -253,7 +259,7 @@ list_func_def
                 /* Guardar dir en orden para que GOSUB de la MV copie args correctamente */
                 funcionActual->paramDirs.push_back(v->dir);
             } else {
-                std::cerr << "Error Semántico: parámetro duplicado '" << $1 << "'\n";
+                cerr << "Error Semántico: parámetro duplicado '" << $1 << "'\n";
                 errsemant++;
             }
         }
@@ -286,15 +292,15 @@ estatuto
         int t_var   = gen.getTipoVar($1);
 
         if (dir_var < 0) {
-            std::cerr << "Error Semántico: variable no declarada '" << $1 << "'\n";
+            cerr << "Error Semántico: variable no declarada '" << $1 << "'\n";
             errsemant++;
         } else if (cuboSemantico.consultar(t_var, t_expr, OP_ASG) == TIPO_ERR) {
-            std::cerr << "Error Semántico: asignación incompatible "
+            cerr << "Error Semántico: asignación incompatible "
                       << tipoToString(t_var) << " = " << tipoToString(t_expr) << "\n";
             errsemant++;
         }
         /* Generar: resultado = expresion */
-        gen.generar("=", $3, "_", std::to_string(dir_var));
+        gen.generar("=", $3, "_", to_string(dir_var));
         gen.lastAssignedDir = dir_var; /* recordar para posible RETURN */
       }
 
@@ -315,7 +321,7 @@ estatuto
          * El índice startQuad se obtiene del directorio de funciones.
          */
         Funcion* f = dirFunciones.buscar(gen.funcCallBuf);
-        std::string startQ = std::to_string(f ? f->startQuad : -1);
+        string startQ = to_string(f ? f->startQuad : -1);
         gen.generar("GOSUB", gen.funcCallBuf, startQ, "_");
       }
 
@@ -339,10 +345,10 @@ expresion
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_ADD);
         if (t_res == TIPO_ERR) {
-            std::cerr << "Error Semántico: tipos incompatibles en '+'\n";
+            cerr << "Error Semántico: tipos incompatibles en '+'\n";
             errsemant++;
         }
-        std::string tmp = gen.nuevoTemp(t_res);
+        string tmp = gen.nuevoTemp(t_res);
         gen.generar("+", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(t_res);
@@ -356,10 +362,10 @@ expresion
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_SUB);
         if (t_res == TIPO_ERR) {
-            std::cerr << "Error Semántico: tipos incompatibles en '-'\n";
+            cerr << "Error Semántico: tipos incompatibles en '-'\n";
             errsemant++;
         }
-        std::string tmp = gen.nuevoTemp(t_res);
+        string tmp = gen.nuevoTemp(t_res);
         gen.generar("-", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(t_res);
@@ -373,10 +379,10 @@ expresion
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_MUL);
         if (t_res == TIPO_ERR) {
-            std::cerr << "Error Semántico: tipos incompatibles en '*'\n";
+            cerr << "Error Semántico: tipos incompatibles en '*'\n";
             errsemant++;
         }
-        std::string tmp = gen.nuevoTemp(t_res);
+        string tmp = gen.nuevoTemp(t_res);
         gen.generar("*", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(t_res);
@@ -389,7 +395,7 @@ expresion
         int t_der = gen.pilaTipos.pop();
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_DIV);
-        std::string tmp = gen.nuevoTemp(t_res);
+        string tmp = gen.nuevoTemp(t_res);
         gen.generar("/", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(t_res);
@@ -403,10 +409,10 @@ expresion
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_GT);
         if (t_res == TIPO_ERR) {
-            std::cerr << "Error Semántico: tipos incompatibles en '>'\n";
+            cerr << "Error Semántico: tipos incompatibles en '>'\n";
             errsemant++;
         }
-        std::string tmp = gen.nuevoTemp(TIPO_INT);
+        string tmp = gen.nuevoTemp(TIPO_INT);
         gen.generar(">", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(TIPO_INT);
@@ -420,10 +426,10 @@ expresion
         int t_izq = gen.pilaTipos.pop();
         int t_res = cuboSemantico.consultar(t_izq, t_der, OP_LT);
         if (t_res == TIPO_ERR) {
-            std::cerr << "Error Semántico: tipos incompatibles en '<'\n";
+            cerr << "Error Semántico: tipos incompatibles en '<'\n";
             errsemant++;
         }
-        std::string tmp = gen.nuevoTemp(TIPO_INT);
+        string tmp = gen.nuevoTemp(TIPO_INT);
         gen.generar("<", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(TIPO_INT);
@@ -435,7 +441,7 @@ expresion
         /* PN-E7: relacional ==; consume tipos pero no los valida estrictamente */
         gen.pilaTipos.pop();
         gen.pilaTipos.pop();
-        std::string tmp = gen.nuevoTemp(TIPO_INT);
+        string tmp = gen.nuevoTemp(TIPO_INT);
         gen.generar("==", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(TIPO_INT);
@@ -447,7 +453,7 @@ expresion
         /* PN-E8: relacional != */
         gen.pilaTipos.pop();
         gen.pilaTipos.pop();
-        std::string tmp = gen.nuevoTemp(TIPO_INT);
+        string tmp = gen.nuevoTemp(TIPO_INT);
         gen.generar("!=", $1, $3, tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(TIPO_INT);
@@ -461,7 +467,7 @@ expresion
          * El cuadruplo UMINUS niega el valor en tiempo de ejecución.
          */
         int t = gen.pilaTipos.pop();
-        std::string tmp = gen.nuevoTemp(t);
+        string tmp = gen.nuevoTemp(t);
         gen.generar("UMINUS", $2, "_", tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(t);
@@ -500,14 +506,14 @@ expresion
          * Los registros especiales RET_INT/RET_FLT guardan el retorno.
          */
         Funcion* f = dirFunciones.buscar(gen.funcCallBuf);
-        std::string startQ = std::to_string(f ? f->startQuad : -1);
+        string startQ = to_string(f ? f->startQuad : -1);
         gen.generar("GOSUB", gen.funcCallBuf, startQ, "_");
 
         /* Copiar valor de retorno del registro especial al temporal */
         int retTipo = f ? f->tipoRetorno : TIPO_INT;
         int retReg  = (retTipo == TIPO_FLT) ? RET_FLT : RET_INT;
-        std::string tmp    = gen.nuevoTemp(retTipo);
-        std::string retStr = std::to_string(retReg);
+        string tmp    = gen.nuevoTemp(retTipo);
+        string retStr = to_string(retReg);
         gen.generar("=", retStr, "_", tmp);
         strcpy($$, tmp.c_str());
         gen.pilaTipos.push(retTipo);
@@ -523,7 +529,7 @@ expresion
         int dir = gen.getDirVar($1);
         int t   = gen.getTipoVar($1);
         if (dir < 0) {
-            std::cerr << "Error Semántico: variable no declarada '" << $1 << "'\n";
+            cerr << "Error Semántico: variable no declarada '" << $1 << "'\n";
             errsemant++;
             sprintf($$, "-1");
         } else {
@@ -570,7 +576,7 @@ argum
          * El índice (0, 1, 2...) indica la posición del argumento
          * para que el ejecutor sepa dónde colocarlo en el frame.
          */
-        std::string idx = std::to_string(gen.contadorArgs);
+        string idx = to_string(gen.contadorArgs);
         gen.generar("ARG", $1, idx, "_");
         gen.pilaTipos.pop();   /* consumir el tipo del argumento */
         gen.contadorArgs++;
@@ -583,7 +589,7 @@ lista_exp
     : ',' expresion
       {
         /* PN-A2: argumentos adicionales (separados por coma) */
-        std::string idx = std::to_string(gen.contadorArgs);
+        string idx = to_string(gen.contadorArgs);
         gen.generar("ARG", $2, idx, "_");
         gen.pilaTipos.pop();
         gen.contadorArgs++;
@@ -625,7 +631,7 @@ ciclo
          */
         int fin     = gen.pilaJumps.pop();   /* índice del GOTOF */
         int retorno = gen.pilaJumps.pop();   /* índice del inicio del ciclo */
-        gen.generar("GOTO", "_", "_", std::to_string(retorno));
+        gen.generar("GOTO", "_", "_", to_string(retorno));
         gen.fila.fillJump(fin, gen.fila.count()); /* rellenar destino del GOTOF */
       }
     ;
@@ -700,7 +706,7 @@ conte_imprimir
          * y generar cuadruplo PRINT con su dirección virtual.
          */
         int addr = dirVirtual.getConstAddr($1, TIPO_NULA);
-        gen.generar("PRINT", std::to_string(addr), "_", "_");
+        gen.generar("PRINT", to_string(addr), "_", "_");
       }
       mas_imp
     | expresion
@@ -733,7 +739,7 @@ mas_imp
  * Imprime el número de línea y el mensaje de error.
  */
 void yyerror(const char *s) {
-    std::cerr << "Error Sintáctico, Línea " << yylineno << ": " << s << "\n";
+    cerr << "Error Sintáctico, Línea " << yylineno << ": " << s << "\n";
     errsintx++;
 }
 
@@ -748,7 +754,7 @@ int main(int argc, char *argv[]) {
         /* Abrir archivo de entrada proporcionado por el usuario */
         FILE *f = fopen(argv[1], "r");
         if (!f) {
-            std::cerr << "Error: no se pudo abrir '" << argv[1] << "'\n";
+            cerr << "Error: no se pudo abrir '" << argv[1] << "'\n";
             return 1;
         }
         yyin = f;
@@ -758,21 +764,21 @@ int main(int argc, char *argv[]) {
     yyparse();
 
     /* Reporte final de errores */
-    std::cout << "\n── Reporte de errores ──────────────────────────────\n";
-    std::cout << "  Errores léxicos    : " << errores_lexicos << "\n";
-    std::cout << "  Errores sintácticos: " << errsintx        << "\n";
-    std::cout << "  Errores semánticos : " << errsemant       << "\n";
-    std::cout << "────────────────────────────────────────────────────\n";
+    cout << "\n── Reporte de errores ──────────────────────────────\n";
+    cout << "  Errores léxicos    : " << errores_lexicos << "\n";
+    cout << "  Errores sintácticos: " << errsintx        << "\n";
+    cout << "  Errores semánticos : " << errsemant       << "\n";
+    cout << "────────────────────────────────────────────────────\n";
 
     if (argc > 1) fclose(yyin);
 
     /* Ejecutar la MV solo si no hubo errores de compilación */
     if (errores_lexicos + errsintx + errsemant == 0) {
-        std::cout << "\n── EJECUCION (Maquina Virtual) ──────────────────────\n";
+        cout << "\n── EJECUCION (Maquina Virtual) ──────────────────────\n";
         MaquinaVirtual vm(gen.fila, dirFunciones);
         vm.cargarConstantes(dirVirtual);
         vm.ejecutar();
-        std::cout << "────────────────────────────────────────────────────\n";
+        cout << "────────────────────────────────────────────────────\n";
     }
 
     return (errores_lexicos + errsintx + errsemant > 0) ? 1 : 0;

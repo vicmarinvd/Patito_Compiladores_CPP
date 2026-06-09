@@ -1,0 +1,32 @@
+programa factorial_recursivo;
+vars
+    num, resultado : entero;
+
+entero factorial(n : entero) {
+    vars
+        r : entero;
+    {
+        si (n < 2)
+        {
+            r = 1;
+        } sino
+        {
+            r = n * factorial(n - 1);
+        };
+    }
+};
+
+inicio
+{
+    num = 6;
+    resultado = factorial(num);
+    escribe("Factorial de", num, "=", resultado, "(esperado: 720)");
+
+    num = 0;
+    resultado = factorial(num);
+    escribe("Factorial de", num, "=", resultado, "(esperado: 1)");
+
+    num = 4;
+    escribe("Factorial de", num, "=", factorial(num), "(esperado: 24)");
+}
+fin

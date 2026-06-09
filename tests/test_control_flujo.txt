@@ -1,0 +1,56 @@
+programa control_flujo;
+vars
+    i, n, negativos, ceros, positivos : entero;
+
+nula clasificar(valor : entero) {
+    {
+        si (valor < 0)
+        {
+            escribe(valor, "es negativo");
+        } sino
+        {
+            si (valor == 0)
+            {
+                escribe(valor, "es cero");
+            } sino
+            {
+                escribe(valor, "es positivo");
+            };
+        };
+    }
+};
+
+inicio
+{
+    n = 5;
+    i = -2;
+    negativos = 0;
+    ceros = 0;
+    positivos = 0;
+
+    mientras (i < n + 1) haz
+    {
+        clasificar(i);
+
+        si (i < 0)
+        {
+            negativos = negativos + 1;
+        } sino
+        {
+            si (i == 0)
+            {
+                ceros = ceros + 1;
+            } sino
+            {
+                positivos = positivos + 1;
+            };
+        };
+
+        i = i + 1;
+    };
+
+    escribe("Negativos:", negativos, "(esperado: 2)");
+    escribe("Ceros:", ceros, "(esperado: 1)");
+    escribe("Positivos:", positivos, "(esperado: 5)");
+}
+fin

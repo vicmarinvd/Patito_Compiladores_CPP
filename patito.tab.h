@@ -90,7 +90,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 41 "patito.y"
+#line 42 "patito.y"
 { char sval[64]; int tval; }
 /* Line 1529 of yacc.c.  */
 #line 97 "patito.tab.h"

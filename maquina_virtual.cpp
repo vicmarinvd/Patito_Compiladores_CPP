@@ -7,6 +7,7 @@
 #include "maquina_virtual.hpp"
 #include <iomanip>
 #include <cstdlib>   // stoi, stof
+using namespace std;
 
 // CONSTRUCTOR
 // Guarda referencias a los cuadruplos y al directorio de funciones.
@@ -30,12 +31,12 @@ void MaquinaVirtual::cargarConstantes(const DirectorioVirtual& dv) {
             // Constante flotante
             int idx = nodo.dir - BASE_CST_FLT;
             if (idx >= 0 && idx < SEG_SIZE)
-                cstFlt[idx] = std::stof(nodo.valor);
+                cstFlt[idx] = stof(nodo.valor);
 
         } else if (nodo.tipo == TIPO_NULA) {
             // String literal: quitar las comillas incluidas por el lexer
             int idx = nodo.dir - BASE_CST_STR;
-            std::string s = nodo.valor;
+            string s = nodo.valor;
             if (s.size() >= 2 && s.front() == '"' && s.back() == '"')
                 s = s.substr(1, s.size() - 2);
             if (idx >= 0 && idx < SEG_SIZE)
@@ -45,7 +46,7 @@ void MaquinaVirtual::cargarConstantes(const DirectorioVirtual& dv) {
             // Constante entera
             int idx = nodo.dir - BASE_CST_INT;
             if (idx >= 0 && idx < SEG_SIZE)
-                cstInt[idx] = std::stoi(nodo.valor);
+                cstInt[idx] = stoi(nodo.valor);
         }
     }
 }
@@ -65,17 +66,17 @@ bool MaquinaVirtual::esFlt(int addr) const {
 // Retorna -1 si es "_", vacio, o un nombre de funcion (no numerico).
 // Algunos cuadruplos como ERA y GOSUB usan arg1 como nombre de funcion,
 // no como direccion; en esos casos toAddr devuelve -1 sin fallar.
-int MaquinaVirtual::toAddr(const std::string& s) const {
+int MaquinaVirtual::toAddr(const string& s) const {
     if (s.empty() || s == "_") return -1;
     // Verificar que el string sea un numero (puede tener signo negativo)
     const char* p = s.c_str();
     if (*p == '-') p++;
     if (!*p) return -1;
     while (*p) {
-        if (!std::isdigit((unsigned char)*p)) return -1;  // es un nombre, no una dir
+        if (!isdigit((unsigned char)*p)) return -1;  // es un nombre, no una dir
         p++;
     }
-    return std::stoi(s);
+    return stoi(s);
 }
 
 // Lee un entero desde la direccion virtual dada
@@ -90,7 +91,7 @@ int MaquinaVirtual::getInt(int addr) const {
         return frameActual->tmpInt[addr - BASE_TMP_INT];
     if (addr >= BASE_CST_INT  && addr < BASE_CST_INT  + SEG_SIZE)
         return cstInt[addr - BASE_CST_INT];
-    std::cerr << "MV getInt: dir invalida " << addr << "\n";
+    cerr << "MV getInt: dir invalida " << addr << "\n";
     return 0;
 }
 
@@ -106,15 +107,15 @@ float MaquinaVirtual::getFlt(int addr) const {
         return frameActual->tmpFlt[addr - BASE_TMP_FLT];
     if (addr >= BASE_CST_FLT  && addr < BASE_CST_FLT  + SEG_SIZE)
         return cstFlt[addr - BASE_CST_FLT];
-    std::cerr << "MV getFlt: dir invalida " << addr << "\n";
+    cerr << "MV getFlt: dir invalida " << addr << "\n";
     return 0.0f;
 }
 
 // Lee un string desde el segmento de constantes
-std::string MaquinaVirtual::getStr(int addr) const {
+string MaquinaVirtual::getStr(int addr) const {
     if (addr >= BASE_CST_STR && addr < BASE_CST_STR + SEG_SIZE)
         return cstStr[addr - BASE_CST_STR];
-    std::cerr << "MV getStr: dir invalida " << addr << "\n";
+    cerr << "MV getStr: dir invalida " << addr << "\n";
     return "";
 }
 
@@ -128,7 +129,7 @@ void MaquinaVirtual::setInt(int addr, int val) {
         { frameActual->locInt[addr - BASE_LOC_INT]  = val; return; }
     if (addr >= BASE_TMP_INT  && addr < BASE_TMP_INT  + SEG_SIZE)
         { frameActual->tmpInt[addr - BASE_TMP_INT]  = val; return; }
-    std::cerr << "MV setInt: dir invalida " << addr << "\n";
+    cerr << "MV setInt: dir invalida " << addr << "\n";
 }
 
 // Escribe un flotante en la direccion virtual dada
@@ -141,7 +142,7 @@ void MaquinaVirtual::setFlt(int addr, float val) {
         { frameActual->locFlt[addr - BASE_LOC_FLT]  = val; return; }
     if (addr >= BASE_TMP_FLT  && addr < BASE_TMP_FLT  + SEG_SIZE)
         { frameActual->tmpFlt[addr - BASE_TMP_FLT]  = val; return; }
-    std::cerr << "MV setFlt: dir invalida " << addr << "\n";
+    cerr << "MV setFlt: dir invalida " << addr << "\n";
 }
 
 // Devuelve el valor en addr como float (promueve int si es necesario)
@@ -157,7 +158,7 @@ int MaquinaVirtual::getAsInt(int addr) const {
 // EJECUTAR UN CUADRUPLO
 bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
 
-    const std::string& op = q.op;
+    const string& op = q.op;
 
     // Convertir strings de argumento a direcciones virtuales
     int a1  = toAddr(q.arg1);
@@ -166,14 +167,14 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
 
     // ── GOTO: salto incondicional ─────────────────────────────────────
     if (op == "GOTO") {
-        ip = std::stoi(q.result) - 1;  // -1 porque el ciclo hace ip++ al final
+        ip = stoi(q.result) - 1;  // -1 porque el ciclo hace ip++ al final
         return true;
     }
 
     // ── GOTOF: salto si la condicion es falsa (==0) ───────────────────
     if (op == "GOTOF") {
         if (getAsInt(a1) == 0)
-            ip = std::stoi(q.result) - 1;
+            ip = stoi(q.result) - 1;
         return true;
     }
 
@@ -210,7 +211,7 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
     // ── DIVISION (resultado siempre float) ────────────────────────────
     if (op == "/") {
         float div = getAsFloat(a2);
-        if (div == 0.0f) { std::cerr << "MV: division por cero\n"; return true; }
+        if (div == 0.0f) { cerr << "MV: division por cero\n"; return true; }
         setFlt(res, getAsFloat(a1) / div);
         return true;
     }
@@ -232,13 +233,13 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
     if (op == "PRINT") {
         if (a1 >= BASE_CST_STR && a1 < BASE_CST_STR + SEG_SIZE) {
             // String literal
-            std::cout << getStr(a1);
+            cout << getStr(a1);
         } else if (esFlt(a1)) {
-            std::cout << getFlt(a1);
+            cout << getFlt(a1);
         } else {
-            std::cout << getInt(a1);
+            cout << getInt(a1);
         }
-        std::cout << " ";
+        cout << " ";
         return true;
     }
 
@@ -253,7 +254,7 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
     // ── ARG: guardar un argumento en el buffer ────────────────────────
     // arg1 = direccion del valor, arg2 = indice del argumento (0,1,2...)
     if (op == "ARG") {
-        int idx = std::stoi(q.arg2);
+        int idx = stoi(q.arg2);
         if (idx >= static_cast<int>(argsBuffer.size()))
             argsBuffer.resize(idx + 1);
 
@@ -272,7 +273,7 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
     if (op == "GOSUB") {
         Funcion* f = dirFunc.buscar(q.arg1);
         if (!f) {
-            std::cerr << "MV: funcion no encontrada '" << q.arg1 << "'\n";
+            cerr << "MV: funcion no encontrada '" << q.arg1 << "'\n";
             return true;
         }
 
@@ -296,11 +297,11 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
         stagingFrame.retAddr = ip + 1;   // donde volver cuando la funcion retorne
 
         // Empujar el frame y actualizar el puntero activo
-        callStack.push_back(std::move(stagingFrame));
+        callStack.push_back(move(stagingFrame));
         frameActual = &callStack.back();
 
         // Saltar al primer cuadruplo de la funcion
-        ip = std::stoi(q.arg2) - 1;
+        ip = stoi(q.arg2) - 1;
         return true;
     }
 
@@ -318,7 +319,7 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
         callStack.pop_back();
 
         if (callStack.empty()) {
-            std::cerr << "MV: ENDFUNC con pila vacia\n";
+            cerr << "MV: ENDFUNC con pila vacia\n";
             return false;
         }
 
@@ -327,7 +328,7 @@ bool MaquinaVirtual::ejecutarCuad(const Cuadruplo& q) {
         return true;
     }
 
-    std::cerr << "MV: opcode desconocido '" << op << "' en cuadruplo " << ip << "\n";
+    cerr << "MV: opcode desconocido '" << op << "' en cuadruplo " << ip << "\n";
     return true;
 }
 
@@ -344,5 +345,5 @@ void MaquinaVirtual::ejecutar() {
     }
 
     // Nueva linea al terminar la salida de escribe(...)
-    std::cout << "\n";
+    cout << "\n";
 }

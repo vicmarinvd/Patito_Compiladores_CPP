@@ -46,17 +46,18 @@
 #include <vector>
 #include <string>
 #include <iostream>
+using namespace std;
 
 // FRAME DE ACTIVACION
 // Se crea al llamar a una funcion y se destruye al retornar.
 // Contiene memoria local + temporales independientes de otros frames.
 struct Frame {
-    std::vector<int>   locInt  = std::vector<int>  (SEG_SIZE, 0);    // locales enteros
-    std::vector<float> locFlt  = std::vector<float>(SEG_SIZE, 0.0f); // locales flotantes
-    std::vector<int>   tmpInt  = std::vector<int>  (SEG_SIZE, 0);    // temporales enteros
-    std::vector<float> tmpFlt  = std::vector<float>(SEG_SIZE, 0.0f); // temporales flotantes
+    vector<int>   locInt  = vector<int>  (SEG_SIZE, 0);    // locales enteros
+    vector<float> locFlt  = vector<float>(SEG_SIZE, 0.0f); // locales flotantes
+    vector<int>   tmpInt  = vector<int>  (SEG_SIZE, 0);    // temporales enteros
+    vector<float> tmpFlt  = vector<float>(SEG_SIZE, 0.0f); // temporales flotantes
     int         retAddr  = 0;   // cuadruplo siguiente al GOSUB (donde volver)
-    std::string funcName;       // nombre de la funcion (para mensajes de debug)
+    string funcName;       // nombre de la funcion (para mensajes de debug)
 };
 
 // BUFFER DE ARGUMENTOS (entre ERA y GOSUB)
@@ -71,28 +72,28 @@ struct Argumento {
 class MaquinaVirtual {
 
     // Memoria global (vive toda la ejecucion)
-    std::vector<int>          globInt = std::vector<int>  (SEG_SIZE, 0);
-    std::vector<float>        globFlt = std::vector<float>(SEG_SIZE, 0.0f);
+    vector<int>          globInt = vector<int>  (SEG_SIZE, 0);
+    vector<float>        globFlt = vector<float>(SEG_SIZE, 0.0f);
 
     // Constantes (cargadas una vez al arrancar desde el pool del compilador)
-    std::vector<int>          cstInt  = std::vector<int>  (SEG_SIZE, 0);
-    std::vector<float>        cstFlt  = std::vector<float>(SEG_SIZE, 0.0f);
-    std::vector<std::string>  cstStr  = std::vector<std::string>(SEG_SIZE);
+    vector<int>          cstInt  = vector<int>  (SEG_SIZE, 0);
+    vector<float>        cstFlt  = vector<float>(SEG_SIZE, 0.0f);
+    vector<string>  cstStr  = vector<string>(SEG_SIZE);
 
     // Registros especiales de retorno de funcion
     int   retInt = 0;
     float retFlt = 0.0f;
 
     // Pila de frames (vector para acceder al tope con back() de forma estable)
-    std::vector<Frame> callStack;
+    vector<Frame> callStack;
     Frame* frameActual = nullptr;   // puntero al frame del tope
 
     // Frame en preparacion entre ERA y GOSUB
     Frame              stagingFrame;
-    std::vector<Argumento> argsBuffer;
+    vector<Argumento> argsBuffer;
 
     // Cuadruplos compilados (referencia, no copia)
-    const std::vector<Cuadruplo>& quads;
+    const vector<Cuadruplo>& quads;
 
     // Directorio de funciones (para obtener paramDirs en GOSUB)
     DirectorioFunciones& dirFunc;
@@ -106,7 +107,7 @@ class MaquinaVirtual {
     // Lectura de memoria por direccion virtual
     int         getInt  (int addr) const;
     float       getFlt  (int addr) const;
-    std::string getStr  (int addr) const;
+    string getStr  (int addr) const;
 
     // Escritura de memoria por direccion virtual
     void setInt(int addr, int   val);
@@ -117,7 +118,7 @@ class MaquinaVirtual {
     int   getAsInt  (int addr) const;
 
     // Convierte string de direccion a int; retorna -1 si es "_"
-    int toAddr(const std::string& s) const;
+    int toAddr(const string& s) const;
 
     // Ejecuta un cuadruplo; retorna false para detener el ciclo
     bool ejecutarCuad(const Cuadruplo& q);

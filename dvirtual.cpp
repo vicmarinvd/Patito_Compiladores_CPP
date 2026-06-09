@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <iomanip>
+using namespace std;
 
 // instancia global
 DirectorioVirtual dirVirtual;
@@ -18,8 +19,8 @@ DirectorioVirtual dirVirtual;
 // Genera una clave única para identificar constantes en el pool.
 // Parametros: valor, tipo.
 // Return: clave con formato "valor|tipo".
-std::string DirectorioVirtual::clavePool(const std::string& valor, int tipo) const {
-    return valor + "|" + std::to_string(tipo);
+string DirectorioVirtual::clavePool(const string& valor, int tipo) const {
+    return valor + "|" + to_string(tipo);
 }
 
 // init
@@ -39,14 +40,14 @@ void DirectorioVirtual::init() {
 int DirectorioVirtual::nextGlobalAddr(int tipo) {
     if (tipo == TIPO_FLT) {
         if (cntGlobFlt >= SEG_SIZE) {
-            std::cerr << "Error: segmento global FLT lleno\n";
+            cerr << "Error: segmento global FLT lleno\n";
             return -1;
         }
         return BASE_GLOB_FLT + cntGlobFlt++;   // asignar y avanzar contador
     }
     // Por defecto: entero
     if (cntGlobInt >= SEG_SIZE) {
-        std::cerr << "Error: segmento global INT lleno\n";
+        cerr << "Error: segmento global INT lleno\n";
         return -1;
     }
     return BASE_GLOB_INT + cntGlobInt++;
@@ -58,13 +59,13 @@ int DirectorioVirtual::nextGlobalAddr(int tipo) {
 int DirectorioVirtual::nextLocalAddr(int tipo) {
     if (tipo == TIPO_FLT) {
         if (cntLocFlt >= SEG_SIZE) {
-            std::cerr << "Error: segmento local FLT lleno\n";
+            cerr << "Error: segmento local FLT lleno\n";
             return -1;
         }
         return BASE_LOC_FLT + cntLocFlt++;
     }
     if (cntLocInt >= SEG_SIZE) {
-        std::cerr << "Error: segmento local INT lleno\n";
+        cerr << "Error: segmento local INT lleno\n";
         return -1;
     }
     return BASE_LOC_INT + cntLocInt++;
@@ -77,13 +78,13 @@ int DirectorioVirtual::nextLocalAddr(int tipo) {
 int DirectorioVirtual::nextTempAddr(int tipo) {
     if (tipo == TIPO_FLT) {
         if (cntTmpFlt >= SEG_SIZE) {
-            std::cerr << "Error: segmento temporal FLT lleno\n";
+            cerr << "Error: segmento temporal FLT lleno\n";
             return -1;
         }
         return BASE_TMP_FLT + cntTmpFlt++;
     }
     if (cntTmpInt >= SEG_SIZE) {
-        std::cerr << "Error: segmento temporal INT lleno\n";
+        cerr << "Error: segmento temporal INT lleno\n";
         return -1;
     }
     return BASE_TMP_INT + cntTmpInt++;
@@ -107,8 +108,8 @@ void DirectorioVirtual::resetTempCounters() {
 // Obtiene la dirección de una constante; si ya existe, la reutiliza.
 // Parametros: valor, tipo.
 // Return: dirección virtual de la constante.
-int DirectorioVirtual::getConstAddr(const std::string& valor, int tipo) {
-    std::string clave = clavePool(valor, tipo);
+int DirectorioVirtual::getConstAddr(const string& valor, int tipo) {
+    string clave = clavePool(valor, tipo);
 
     // Buscar si ya existe en el pool
     auto it = poolCtes.find(clave);
@@ -138,16 +139,16 @@ int DirectorioVirtual::getConstAddr(const std::string& valor, int tipo) {
 // Muestra una tabla con la base, límite y cantidad de direcciones
 // usadas en cada segmento del mapa de memoria virtual.
 void DirectorioVirtual::imprimirMapa() const {
-    std::cout << "\n---- MAPA DE MEMORIA VIRTUAL ----------\n";
-    std::cout << "  Segmento           Base   Límite  Usadas\n";
-    std::cout << "  ─────────────────  ─────  ──────  ──────\n";
+    cout << "\n---- MAPA DE MEMORIA VIRTUAL ----------\n";
+    cout << "  Segmento           Base   Límite  Usadas\n";
+    cout << "  ─────────────────  ─────  ──────  ──────\n";
 
     // Lambda auxiliar para imprimir una fila formateada
-    auto fila = [](const std::string& nombre, int base, int usado) {
-        std::cout << "  " << std::left  << std::setw(17) << nombre
-                  << "  " << std::right << std::setw(5)  << base
-                  << "  " << std::setw(6) << (base + SEG_SIZE - 1)
-                  << "  " << std::setw(6) << usado << "\n";
+    auto fila = [](const string& nombre, int base, int usado) {
+        cout << "  " << left  << setw(17) << nombre
+                  << "  " << right << setw(5)  << base
+                  << "  " << setw(6) << (base + SEG_SIZE - 1)
+                  << "  " << setw(6) << usado << "\n";
     };
 
     fila("Global entero",   BASE_GLOB_INT, cntGlobInt);
@@ -161,7 +162,7 @@ void DirectorioVirtual::imprimirMapa() const {
     fila("Const  string",   BASE_CST_STR,  cntCstStr);
 
     // Registros especiales de retorno (no son segmentos, solo referencias fijas)
-    std::cout << "\n  Registro RET_INT : " << RET_INT << "  (retorno entero de función)\n";
-    std::cout << "  Registro RET_FLT : " << RET_FLT << "  (retorno flotante de función)\n";
-    std::cout << "------------------------------------------\n\n";
+    cout << "\n  Registro RET_INT : " << RET_INT << "  (retorno entero de función)\n";
+    cout << "  Registro RET_FLT : " << RET_FLT << "  (retorno flotante de función)\n";
+    cout << "------------------------------------------\n\n";
 }

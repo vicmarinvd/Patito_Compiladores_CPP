@@ -24,6 +24,7 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+using namespace std;
 
 // bases y tamaños 
 constexpr int BASE_GLOB_INT = 1000;   // variables globales enteras
@@ -44,7 +45,7 @@ constexpr int RET_FLT = 101;
 
 // Nodo para almacenar constantes registradas
 struct NodoCte {
-    std::string valor;   // representación textual de la constante
+    string valor;   // representación textual de la constante
     int         tipo;    // TIPO_INT, TIPO_FLT o TIPO_NULA (string)
     int         dir;     // dirección virtual asignada
 };
@@ -60,10 +61,10 @@ class DirectorioVirtual {
 
     // Pool de constantes
     // Clave: "valor|tipo" - NodoCte  (evita duplicados)
-    std::unordered_map<std::string, NodoCte> poolCtes;
+    unordered_map<string, NodoCte> poolCtes;
 
     // Construye la clave única para buscar en el pool
-    std::string clavePool(const std::string& valor, int tipo) const;
+    string clavePool(const string& valor, int tipo) const;
 
 public:
     // Reinicia todos los contadores (llamar al inicio del programa)
@@ -82,7 +83,7 @@ public:
 
     // Busca la constante en el pool; si no existe la registra.
     // Retorna su dirección virtual (reutiliza si ya estaba registrada)
-    int getConstAddr(const std::string& valor, int tipo);
+    int getConstAddr(const string& valor, int tipo);
 
     // Reset parcial
 
@@ -96,7 +97,7 @@ public:
     void imprimirMapa() const;
 
     // Expone el pool de constantes a la MV para inicializar su memoria de constantes
-    const std::unordered_map<std::string, NodoCte>& getPool() const { return poolCtes; }
+    const unordered_map<string, NodoCte>& getPool() const { return poolCtes; }
 };
 
 //Instancia global

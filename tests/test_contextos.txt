@@ -1,0 +1,79 @@
+programa contextos;
+vars
+    base, limite, total : entero;
+    promedioG : flotante;
+
+entero factorialRec(n : entero) {
+    vars
+        r : entero;
+    {
+        si (n < 2)
+        {
+            r = 1;
+        } sino
+        {
+            r = n * factorialRec(n - 1);
+        };
+    }
+};
+
+entero sumaRango(ini : entero, limiteSup : entero) {
+    vars
+        i, acc : entero;
+    {
+        i = ini;
+        acc = 0;
+        mientras (i < limiteSup + 1) haz
+        {
+            acc = acc + i;
+            i = i + 1;
+        };
+        acc = acc;
+    }
+};
+
+flotante promedio(suma : entero, cantidad : entero) {
+    vars
+        r : flotante;
+    {
+        r = suma / cantidad;
+    }
+};
+
+nula reporte(n : entero) {
+    vars
+        f, s : entero;
+    {
+        f = factorialRec(n);
+        escribe(n, "factorial =", f);
+        s = sumaRango(1, n);
+        escribe("suma 1..", n, "=", s);
+    }
+};
+
+inicio
+{
+    base = 5;
+    limite = 8;
+
+    escribe("-- reporte para 5 (factorial esperado 120, suma esperada 15) --");
+    reporte(base);
+
+    escribe("-- reporte para 8 (factorial esperado 40320, suma esperada 36) --");
+    reporte(limite);
+
+    total = sumaRango(base, limite);
+    escribe("suma de", base, "a", limite, "=", total, "(esperado: 26)");
+
+    promedioG = promedio(total, limite - base + 1);
+    escribe("promedio =", promedioG, "(esperado: 6.5)");
+
+    si (promedioG > 6.0)
+    {
+        escribe("El promedio es mayor a 6");
+    } sino
+    {
+        escribe("El promedio es 6 o menor");
+    };
+}
+fin
